@@ -31,20 +31,25 @@ import android.widget.TextView;
 
 import com.github.yasevich.endlessrecyclerview.EndlessRecyclerView;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 /**
  * @author Slava Yasevich
  */
 public final class MainActivity extends Activity implements EndlessRecyclerView.Pager {
 
-    private static final int ITEMS_ON_PAGE = 8;
-    private static final int TOTAL_PAGES = 10;
     private static final long DELAY = 1000L;
 
-    private final Adapter adapter = new Adapter();
+    private List<Integer> data = generateData();
+    private final Adapter adapter = new Adapter(data);
     private final Handler handler = new Handler();
 
     private EndlessRecyclerView list;
-    private boolean loading = false;
+
+    private boolean loadingBottom = false;
+    private boolean loadingTop = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +61,18 @@ public final class MainActivity extends Activity implements EndlessRecyclerView.
         list.setProgressView(R.layout.item_progress);
         list.setAdapter(adapter);
         list.setPager(this);
+        list.scrollToPosition(15);
+    }
 
+    private List<Integer> generateData() {
+        List<Integer> initialData = new ArrayList<>(30);
+        for (int i = 0; i < 30; i++) {
+            initialData.add(randomInt());
+        }
+        return initialData;
+    }
+
+<<<<<<< HEAD
         findViewById(android.R.id.button1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,26 +96,32 @@ public final class MainActivity extends Activity implements EndlessRecyclerView.
         });
 
         addItems();
+=======
+    private Integer randomInt() {
+        Random rand = new Random();
+        return rand.nextInt(1000);
+>>>>>>> c47981334de6eece3a031cb5cc6359f47e1f1211
     }
 
     @Override
-    public boolean shouldLoad() {
-        return !loading && adapter.getItemCount() / ITEMS_ON_PAGE < TOTAL_PAGES;
+    public boolean shouldLoadBottom() {
+        return !loadingBottom;
     }
 
     @Override
-    public void loadNextPage() {
-        loading = true;
+    public void loadNextBottomPage() {
+        loadingBottom = true;
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                list.setRefreshing(false);
-                loading = false;
-                addItems();
+                list.setRefreshingBottom(false);
+                loadingBottom = false;
+                adapter.addBottom(generateData());
             }
         }, DELAY);
     }
 
+<<<<<<< HEAD
     private void updateLayoutManager(@NonNull RecyclerView.LayoutManager layoutManager) {
         list.setLayoutManager(layoutManager);
         adapter.setCount(0);
@@ -108,11 +130,33 @@ public final class MainActivity extends Activity implements EndlessRecyclerView.
 
     private void addItems() {
         adapter.setCount(adapter.getItemCount() + ITEMS_ON_PAGE);
+=======
+    @Override
+    public boolean shouldLoadTop() {
+        return !loadingTop;
+    }
+
+    @Override
+    public void loadNextTopPage() {
+        loadingTop = true;
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                list.setRefreshingTop(false);
+                loadingTop = false;
+                adapter.addTop(generateData());
+            }
+        }, DELAY);
+>>>>>>> c47981334de6eece3a031cb5cc6359f47e1f1211
     }
 
     private static final class Adapter extends RecyclerView.Adapter<ViewHolder> {
 
-        private int count;
+        private final List<Integer> data;
+
+        public Adapter(List<Integer> data) {
+            this.data = data;
+        }
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -121,17 +165,27 @@ public final class MainActivity extends Activity implements EndlessRecyclerView.
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
+<<<<<<< HEAD
             holder.text.setText(String.format("Item: %1$s", position + 1));
+=======
+            holder.text.setText("Generated item: " + (data.get(position)));
+>>>>>>> c47981334de6eece3a031cb5cc6359f47e1f1211
         }
 
         @Override
         public int getItemCount() {
-            return count;
+            return data.size();
         }
 
-        public void setCount(int count) {
-            this.count = count;
-            notifyDataSetChanged();
+        public void addBottom(List<Integer> newBottomData) {
+            int oldSize = data.size();
+            data.addAll(newBottomData);
+            notifyItemRangeChanged(oldSize, newBottomData.size() - 1);
+        }
+
+        public void addTop(List<Integer> newTopData) {
+            data.addAll(0, newTopData);
+            notifyItemRangeChanged(0, newTopData.size() - 1);
         }
     }
 

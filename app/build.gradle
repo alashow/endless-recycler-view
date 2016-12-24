@@ -14,6 +14,10 @@ android {
 }
 
 dependencies {
+<<<<<<< HEAD
     // compile 'com.github.yasevich:endless-recycler-view:1.1.0'
+=======
+//    compile 'com.github.yasevich:endless-recycler-view:1.0'
+>>>>>>> c47981334de6eece3a031cb5cc6359f47e1f1211
     compile project(':library')
 }
