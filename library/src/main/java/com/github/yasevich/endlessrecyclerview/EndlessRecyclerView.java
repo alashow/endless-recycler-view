@@ -57,13 +57,8 @@ import android.view.ViewGroup;
  * {@link #setOnScrollListener(OnScrollListener)}. Calling
  * {@link #setOnScrollListener(OnScrollListener)} will cause {@link UnsupportedOperationException}.
  * <p>
-<<<<<<< HEAD
- * If you use {@link RecyclerView.Adapter} with stable ids and want to show progress view, you
- * should keep in mind that view holder of progress view will have {@link #NO_ID}.
-=======
  * If you use {@link Adapter} with stable ids and want to show progress view, you
  * should keep in mind that view holder of progress view will have {@code NO_ID}.
->>>>>>> c47981334de6eece3a031cb5cc6359f47e1f1211
  *
  */
 public final class EndlessRecyclerView extends RecyclerView {
@@ -236,6 +231,7 @@ public final class EndlessRecyclerView extends RecyclerView {
             return;
         }
         this.refreshing = refreshing;
+<<<<<<< HEAD
         notifyDataSetChanged();
 =======
     public void setRefreshingPrev(boolean refreshingPrev) {
@@ -248,6 +244,14 @@ public final class EndlessRecyclerView extends RecyclerView {
         else
             this.adapterWrapper.notifyItemRangeInserted(0, 1);
 >>>>>>> c47981334de6eece3a031cb5cc6359f47e1f1211
+=======
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                notifyDataSetChanged();
+            }
+        });
+>>>>>>> c52c07c3885979bc2870c2ca850a98d1f3993263
     }
 
     /**
